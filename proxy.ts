@@ -2,46 +2,44 @@ import arcjet, { createMiddleware, detectBot, shield } from '@arcjet/next';
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
 
+
 const isProtectedRoute = createRouteMatcher([
   "/dashboard(.*)",
   "/collection(.*)",
   "/journal(.*)",
-]);
+])
 
-// Shield and bot detection - arcjet
+// sheild and bot detection - arcjet
 const arcjetKey: string = process.env.ARCJET_KEY ?? '';
 
-const aj = arcjetKey
-  ? arcjet({
-      key: arcjetKey,
-      rules: [
-        shield({
-          mode: "LIVE",
-        }),
-        detectBot({
-          mode: "LIVE",
-          allow: ["CATEGORY:SEARCH_ENGINE"],
-        }),
-      ],
-    })
-  : null;
+const aj = arcjet({
+  key: arcjetKey,
+  rules:[
+     shield({
+      mode: "LIVE",
+     }),
+     detectBot({
+      mode: "LIVE",
+      allow:["CATEGORY:SEARCH_ENGINE"],
+     })
+  ]
+})
 
-const clerk = clerkMiddleware(
-  async (auth, req) => {
-    const { userId, redirectToSignIn } = await auth();
-    if (!userId && isProtectedRoute(req)) {
-      return redirectToSignIn();
-    }
-
-    return NextResponse.next();
-  },
-  {
-    signInUrl: "/sign-in",
-    signUpUrl: "/sign-up",
+const clerk = clerkMiddleware(async(auth, req)=>{
+  const {userId, redirectToSignIn} = await auth();
+  if (!userId && isProtectedRoute(req)) {
+    return redirectToSignIn();
   }
-);
 
-export default aj ? createMiddleware(aj, clerk) : clerk;
+  return NextResponse.next();
+}, {
+  signInUrl: '/sign-in',
+  signUpUrl: '/sign-up',
+});
+
+export default createMiddleware(aj, clerk)
+
+
 
 export const config = {
   matcher: [
