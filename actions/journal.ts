@@ -3,8 +3,7 @@
 import type { z } from "zod";
 import { getMoodById, MOODS } from "@/app/lib/mood";
 import { db } from "@/lib/prisma";
-// import { SortOrder } from "@prisma/client";
-import { SortOrder } from "@/lib/generated/prisma/internal/prismaNamespace";
+type SortOrder = "asc" | "desc";
 import { auth } from "@clerk/nextjs/server";
 import { getPixabayImage } from "./public";
 import { revalidatePath } from "next/cache";

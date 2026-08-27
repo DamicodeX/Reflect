@@ -49,9 +49,7 @@ const Collections = ({ collections = [], entriesByCollection }: Props) => {
             toast.success(`Collection "${createdCollection.name}" created successfully!`);
             router.refresh();
         }
-    }
-    
-    if (collections.length === 0) return null;
+    };
 
     return (
         <section>

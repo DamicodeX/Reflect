@@ -18,17 +18,18 @@ export const checkUser = async () => {
             return loggedInUser;
         }
 
-        const name = `${user.firstName} ${user.lastName}`;
+        const name = [user.firstName, user.lastName].filter(Boolean).join(" ") || user.username || "User";
+        const email = user.emailAddresses?.[0]?.emailAddress ?? `${user.id}@clerk.user`;
 
         const newUser = await db.user.create({
             data:{
                 clerkUserId: user.id,
                 name,
                 imageUrl: user.imageUrl,
-                email: user.emailAddresses[0].emailAddress,
+                email,
             }
         });
-        return newUser
+        return newUser;
     } catch (error) {
         console.log("Error fetching user from database:", error);
         return null;

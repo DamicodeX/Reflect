@@ -14,8 +14,9 @@ type JournalEntry = {
 };
 
 type EntriesByCollection = Record<string, JournalEntry[]>;
+export const dynamic = "force-dynamic";
 
-const Dashboard = async() => {
+const Dashboard = async () => {
 
   const collections = await getCollections();
   const entriesData = await getJournalEntries({});
@@ -24,7 +25,7 @@ const Dashboard = async() => {
 
   const entriesByCollection = (entriesData.data?.entries ?? []).reduce<EntriesByCollection>((acc, entry) => {
     const collectionId = entry.collectionId || "unorganized";
-    if (!acc[collectionId]){
+    if (!acc[collectionId]) {
       acc[collectionId] = [];
     }
     acc[collectionId].push(entry);
@@ -35,14 +36,14 @@ const Dashboard = async() => {
 
   return (
     <div className='px-4 py-8 space-y-8'>
-     <section className='space-y-4'>
-      <MoodAnalytics/>
-     </section>
+      <section className='space-y-4'>
+        <MoodAnalytics />
+      </section>
 
-    <Collections
-    collections={collections}
-    entriesByCollection={entriesByCollection}
-    />
+      <Collections
+        collections={collections}
+        entriesByCollection={entriesByCollection}
+      />
     </div>
   )
 }
